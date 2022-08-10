@@ -1,0 +1,56 @@
+---
+- name: Login Setup
+  hosts: all
+  become: true
+  tasks:
+    - name: Install git
+      apt: name=git state=present 
+
+    - name: Check if repository exists
+      stat:
+        path: "/home/vagrant/microservice-app-example"
+      register: result
+      
+    - name: install repository
+      git: 
+        repo: https://github.com/tefaardila/microservice-app-example.git
+        dest: /home/vagrant/microservice-app-example
+        clone: yes
+      when: not result.stat.exists
+
+
+    - name: Remove other folders
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /home/vagrant/microservice-app-example/frontend/
+        - /home/vagrant/microservice-app-example/log-message-processor/
+        - /home/vagrant/microservice-app-example/todos-api
+
+    - name: Install Java jdk 8 
+      apt: name=openjdk-8-jdk state=present
+    
+    - name: Install maven
+      apt: name=maven state=present
+
+
+    - name: Install Go with Snap
+      snap: 
+        name: go
+        classic: yes
+        channel: 1.18/stable
+
+
+
+    - name: Add nodejs apt key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+
+    - name: Setup users-api
+      shell: update-ca-certificates -f
+      shell: ./mvnw clean install
+      args:
+        chdir: /home/vagrant/microservice-app-example/users-api/
+        
