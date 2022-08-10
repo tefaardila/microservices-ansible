@@ -4,6 +4,25 @@
 
 Vagrant.configure("2") do |config|
   
+  config.vm.define "frontend" do |frontend|
+  
+    frontend.vm.box = "hashicorp/bionic64"
+    frontend.vm.hostname = "frontend"
+    frontend.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+
+    frontend.vm.network "private_network", ip: "192.168.33.10"
+    
+    frontend.vm.provision "A", type: "ansible_local" do |ansible|
+      ansible.playbook = "frontend.yml"
+    end
+
+    frontend.vm.provision "B",after: "A", type: "ansible_local" do |ansible|
+      ansible.playbook = "d-frontend.yml"
+    end
+    
+  end
  
 
   config.vm.define "login" do |login|
@@ -51,4 +70,5 @@ Vagrant.configure("2") do |config|
     end
 
   end
+ 
 end
