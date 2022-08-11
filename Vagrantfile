@@ -25,25 +25,25 @@ Vagrant.configure("2") do |config|
   end
  
 
-  config.vm.define "login" do |login|
+  config.vm.define "databaseend" do |databaseend|
   
-    login.vm.box = "hashicorp/bionic64"
-    login.vm.hostname = "login"
+    databaseend.vm.box = "hashicorp/bionic64"
+    databaseend.vm.hostname = "databaseend"
     
-    login.vm.provider "virtualbox" do |vb|
+    databaseend.vm.provider "virtualbox" do |vb|
       vb.memory = "2048"
     end
     
     
-    login.vm.network "private_network", ip: "192.168.33.11"
+    databaseend.vm.network "private_network", ip: "192.168.33.11"
 
-    login.vm.provision "A", type: "ansible_local" do |ansible|
-      ansible.playbook = "login.yml"
+    databaseend.vm.provision "A", type: "ansible_local" do |ansible|
+      ansible.playbook = "databaseend.yml"
     end
-    login.vm.provision "B", after: "A", type: "shell", path: "go.sh"
+    databaseend.vm.provision "B", after: "A", type: "shell", path: "go.sh"
     
-    login.vm.provision "C", after: "B", type: "ansible_local" do |ansible|
-      ansible.playbook = "d-login.yml"
+    databaseend.vm.provision "C", after: "B", type: "ansible_local" do |ansible|
+      ansible.playbook = "d-databaseend.yml"
     end
 
   end 
@@ -51,22 +51,22 @@ Vagrant.configure("2") do |config|
 
 
 
-  config.vm.define "back" do |back|
+  config.vm.define "database" do |database|
   
-    back.vm.box = "hashicorp/bionic64"
-    back.vm.hostname = "back"
-    back.vm.provider "virtualbox" do |vb|
+    database.vm.box = "hashicorp/bionic64"
+    database.vm.hostname = "database"
+    database.vm.provider "virtualbox" do |vb|
       vb.memory = "2048"
     end
 
-    back.vm.network "private_network", ip: "192.168.33.12"
+    database.vm.network "private_network", ip: "192.168.33.12"
        
-    back.vm.provision "A", type: "ansible_local" do |ansible|
-      ansible.playbook = "back.yml"
+    database.vm.provision "A", type: "ansible_local" do |ansible|
+      ansible.playbook = "database.yml"
     end
 
-    back.vm.provision "B",after:"A", type: "ansible_local" do |ansible|
-      ansible.playbook = "d-back.yml"
+    database.vm.provision "B",after:"A", type: "ansible_local" do |ansible|
+      ansible.playbook = "d-database.yml"
     end
 
   end

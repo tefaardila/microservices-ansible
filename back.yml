@@ -1,5 +1,5 @@
 ---
-- name: Back setup
+- name: database setup
   hosts: all
   become: true
   tasks:
