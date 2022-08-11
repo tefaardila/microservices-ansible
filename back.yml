@@ -29,15 +29,20 @@
         - /home/vagrant/microservice-app-example/users-api 
         - /home/vagrant/microservice-app-example/auth-api 
         
-    
+    - name: Check if Node exists
+      stat:
+        path: "/usr/bin/node"
+      register: result2
+
     - name: Add nodejs apt key
       apt_key:
         url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
         state: present
-
+      when: not result2.stat.exists
     
     - name: Get nodejs
       shell: sudo curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+      when: not result2.stat.exists
 
     - name: Install nodejs 
       apt: 
