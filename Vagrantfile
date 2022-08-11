@@ -25,25 +25,25 @@ Vagrant.configure("2") do |config|
   end
  
 
-  config.vm.define "databaseend" do |databaseend|
+  config.vm.define "backend" do |backend|
   
-    databaseend.vm.box = "hashicorp/bionic64"
-    databaseend.vm.hostname = "databaseend"
+    backend.vm.box = "hashicorp/bionic64"
+    backend.vm.hostname = "backend"
     
-    databaseend.vm.provider "virtualbox" do |vb|
+    backend.vm.provider "virtualbox" do |vb|
       vb.memory = "2048"
     end
     
     
-    databaseend.vm.network "private_network", ip: "192.168.33.11"
+    backend.vm.network "private_network", ip: "192.168.33.11"
 
-    databaseend.vm.provision "A", type: "ansible_local" do |ansible|
-      ansible.playbook = "databaseend.yml"
+    backend.vm.provision "A", type: "ansible_local" do |ansible|
+      ansible.playbook = "backend.yml"
     end
-    databaseend.vm.provision "B", after: "A", type: "shell", path: "go.sh"
+    backend.vm.provision "B", after: "A", type: "shell", path: "go.sh"
     
-    databaseend.vm.provision "C", after: "B", type: "ansible_local" do |ansible|
-      ansible.playbook = "d-databaseend.yml"
+    backend.vm.provision "C", after: "B", type: "ansible_local" do |ansible|
+      ansible.playbook = "d-backend.yml"
     end
 
   end 
