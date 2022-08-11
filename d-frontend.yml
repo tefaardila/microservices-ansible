@@ -4,6 +4,6 @@
   become: true
   tasks:    
     - name: deploy frontend
-      shell: screen -dm bash -c "PORT=8080 AUTH_API_ADDRESS=http://192.168.33.11:8000 TODOS_API_ADDRESS=http://192.168.33.12:8082 npm start"
+      shell: screen -dm bash -c "PORT=8080 AUTH_API_ADDRESS=http://192.168.33.11:8000 TODOS_API_ADDRESS=http://192.168.33.11:8082 npm start"
       args:
          chdir: /home/vagrant/microservice-app-example/frontend

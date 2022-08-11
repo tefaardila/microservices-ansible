@@ -28,38 +28,9 @@
         - /home/vagrant/microservice-app-example/frontend/
         - /home/vagrant/microservice-app-example/users-api 
         - /home/vagrant/microservice-app-example/auth-api 
+        - /home/vagrant/microservice-app-example/todos-api/
+        - /home/vagrant/microservice-app-example/log-message-processor
         
-    - name: Check if Node exists
-      stat:
-        path: "/usr/bin/node"
-      register: result2
-
-    - name: Add nodejs apt key
-      apt_key:
-        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-        state: present
-      when: not result2.stat.exists
-    
-    - name: Get nodejs
-      shell: sudo curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-      when: not result2.stat.exists
-
-    - name: Install nodejs 
-      apt: 
-        name: nodejs
-        state: present 
-
-    - name: Repository Python
-      apt_repository:
-        repo: ppa:deadsnakes/ppa
-        state: present
-        update_cache: yes
-      
-    - name: Install python3.6
-      apt: name=python state=present
-
-    - name: Install Pip3
-      apt: name=python3-pip state=present
 
     - name: Get and Prepare redis
       shell: curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -67,16 +38,4 @@
       
     - name: Install redis
       apt: name=redis state=present
-  
-    - name: Setpup todos-api
-      shell: sudo npm install
-      args:
-        chdir: /home/vagrant/microservice-app-example/todos-api/
-
-    - name: Setpup log mesasage processor
-      shell: sudo pip3 install redis
-      shell: sudo pip3 install -r requirements.txt
-      args:
-        chdir: /home/vagrant/microservice-app-example/log-message-processor/
-
   
