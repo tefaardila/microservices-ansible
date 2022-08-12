@@ -30,7 +30,10 @@
         - /home/vagrant/microservice-app-example/auth-api 
         - /home/vagrant/microservice-app-example/todos-api/
         - /home/vagrant/microservice-app-example/log-message-processor
-        
+
+
+    - name: Install Java jdk 8 
+      apt: name=openjdk-8-jdk state=present     
 
     - name: Get and Prepare redis
       shell: curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -39,3 +42,19 @@
     - name: Install redis
       apt: name=redis state=present
   
+    - name: Repository Python
+      apt_repository:
+        repo: ppa:deadsnakes/ppa
+        state: present
+      
+    - name: Install python3.6
+      apt: name=python state=present
+
+    - name: Install Pip3
+      apt: name=python3-pip state=present
+
+    - name: Setpup log processor
+      shell: sudo pip3 install redis
+      shell: sudo pip3 install -r requirements.txt
+      args:
+        chdir: /home/vagrant/microservice-app-example/log-message-processor/

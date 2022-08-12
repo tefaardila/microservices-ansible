@@ -25,6 +25,7 @@
         state: absent
       with_items:
         - /home/vagrant/microservice-app-example/frontend/
+        - /home/vagrant/microservice-app-example/log-message-processor/
 
     - name: Install Java jdk 8 
       apt: name=openjdk-8-jdk state=present
@@ -70,7 +71,7 @@
 
     - name: Install Pip3
       apt: name=python3-pip state=present
-      
+
     - name: Setup users-api
       shell: update-ca-certificates -f
       shell: ./mvnw clean install
@@ -82,8 +83,8 @@
       args:
         chdir: /home/vagrant/microservice-app-example/todos-api/
 
-    - name: Setpup log mesasage processor
-      shell: sudo pip3 install redis
-      shell: sudo pip3 install -r requirements.txt
-      args:
-        chdir: /home/vagrant/microservice-app-example/log-message-processor/
+    # - name: Setpup log mesasage processor
+    #   #shell: sudo pip3 install redis
+    #   shell: sudo pip3 install -r requirements.txt
+    #   args:
+    #     chdir: /home/vagrant/microservice-app-example/log-message-processor/

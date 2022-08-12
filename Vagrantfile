@@ -18,9 +18,9 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "frontend.yml"
     end
 
-    frontend.vm.provision "B",after: "A", type: "ansible_local" do |ansible|
-      ansible.playbook = "d-frontend.yml"
-    end
+    # frontend.vm.provision "B",after: "A", type: "ansible_local" do |ansible|
+    #   ansible.playbook = "d-frontend.yml"
+    # end
     
   end
  
@@ -42,9 +42,9 @@ Vagrant.configure("2") do |config|
     end
     backend.vm.provision "B", after: "A", type: "shell", path: "go.sh"
     
-    backend.vm.provision "C", after: "B", type: "ansible_local" do |ansible|
-      ansible.playbook = "d-backend.yml"
-    end
+    # backend.vm.provision "C", after: "B", type: "ansible_local" do |ansible|
+    #   ansible.playbook = "d-backend.yml"
+    # end
 
   end 
 

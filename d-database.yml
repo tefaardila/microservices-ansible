@@ -1,0 +1,9 @@
+---
+- name: Frontend Deployment
+  hosts: all
+  become: true
+  tasks:
+    - name: deploy log message processor
+      shell: screen -dm bash -c "REDIS_HOST=192.168.33.12 REDIS_PORT=6379 REDIS_CHANNEL=log_channel python3 main.py; exe sh"
+      args:
+         chdir: /home/vagrant/microservice-app-example/log-message-processor
