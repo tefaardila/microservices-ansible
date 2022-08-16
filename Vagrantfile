@@ -13,14 +13,14 @@ Vagrant.configure("2") do |config|
     end
 
     frontend.vm.network "private_network", ip: "192.168.33.10"
-    
+    #frontend.vm.network "forwarded_port", guest: 8082, host: 8082, host_ip: "192.168.33.12"
     frontend.vm.provision "A", type: "ansible_local" do |ansible|
       ansible.playbook = "frontend.yml"
     end
 
-    # frontend.vm.provision "B",after: "A", type: "ansible_local" do |ansible|
-    #   ansible.playbook = "d-frontend.yml"
-    # end
+    frontend.vm.provision "B",after: "A", type: "ansible_local" do |ansible|
+      ansible.playbook = "d-frontend.yml"
+    end
     
   end
  
@@ -36,15 +36,15 @@ Vagrant.configure("2") do |config|
     
     
     backend.vm.network "private_network", ip: "192.168.33.11"
-    backend.vm.network "forwarded_port", guest: 6379, host: 6379, host_ip: "192.168.33.12"
+    #backend.vm.network "forwarded_port", guest: 6379, host: 6379, host_ip: "192.168.33.12"
     backend.vm.provision "A", type: "ansible_local" do |ansible|
       ansible.playbook = "backend.yml"
     end
     backend.vm.provision "B", after: "A", type: "shell", path: "go.sh"
     
-    # backend.vm.provision "C", after: "B", type: "ansible_local" do |ansible|
-    #   ansible.playbook = "d-backend.yml"
-    # end
+    backend.vm.provision "C", after: "B", type: "ansible_local" do |ansible|
+      ansible.playbook = "d-backend.yml"
+    end
 
   end 
 
@@ -66,9 +66,9 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "database.yml"
     end
 
-    # database.vm.provision "B",after:"A", type: "ansible_local" do |ansible|
-    #   ansible.playbook = "d-database.yml"
-    # end
+    database.vm.provision "B",after:"A", type: "ansible_local" do |ansible|
+      ansible.playbook = "d-database.yml"
+    end
 
   end
  

@@ -25,7 +25,6 @@
         state: absent
       with_items:
         - /home/vagrant/microservice-app-example/frontend/
-        - /home/vagrant/microservice-app-example/log-message-processor/
 
     - name: Install Java jdk 8 
       apt: name=openjdk-8-jdk state=present
@@ -77,14 +76,22 @@
       shell: ./mvnw clean install
       args:
         chdir: /home/vagrant/microservice-app-example/users-api/
+    
+    - name: Setup Auth-api
+      shell: sudo echo 'export GO111MODULE=on' >> /$HOME/.profile
+      shell: sudo go mod init github.com/tefaardila/microservice-app-example/tree/master/auth-api
+      shell: sudo go mod tidy
+      shell: sudo go build
+      args:
+        chdir: /home/vagrant/microservice-app-example/auth-api
         
     - name: Setpup todos-api
       shell: sudo npm install
       args:
         chdir: /home/vagrant/microservice-app-example/todos-api/
 
-    # - name: Setpup log mesasage processor
-    #   #shell: sudo pip3 install redis
-    #   shell: sudo pip3 install -r requirements.txt
-    #   args:
-    #     chdir: /home/vagrant/microservice-app-example/log-message-processor/
+    - name: Setpup log mesasage processor
+      shell: sudo pip3 install redis
+      shell: sudo pip3 install -r requirements.txt
+      args:
+        chdir: /home/vagrant/microservice-app-example/log-message-processor/

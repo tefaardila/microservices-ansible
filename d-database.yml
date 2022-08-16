@@ -1,9 +1,21 @@
 ---
-- name: Frontend Deployment
+- name: Database Deployment
   hosts: all
   become: true
   tasks:
-    - name: deploy log message processor
-      shell: screen -dm bash -c "REDIS_HOST=192.168.33.12 REDIS_PORT=6379 REDIS_CHANNEL=log_channel python3 main.py; exe sh"
-      args:
-         chdir: /home/vagrant/microservice-app-example/log-message-processor
+    - name: Change redis bind ip
+      lineinfile: 
+        path: /etc/redis/redis.conf
+        regexp: 'bind 127.0.0.1 ::1'
+        line: 'bind 0.0.0.0'
+        backrefs: yes
+
+    - name: Change redis protected mode
+      lineinfile: 
+        path: /etc/redis/redis.conf
+        regexp: 'protected-mode yes'
+        line: 'protected-mode no'
+        backrefs: yes
+        
+    - name: Restart redis 
+      shell: sudo systemctl restart redis
