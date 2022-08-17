@@ -14,12 +14,17 @@
       args:
          chdir: /home/vagrant/microservice-app-example/auth-api 
     
-    - name: deploy todos
-      shell: screen -dm bash -c "JWT_SECRET=PRFT TODO_API_PORT=8082 REDIS_HOST=192.168.33.12 REDIS_PORT=6379 npm start; exe sh"
-      args:
-         chdir: /home/vagrant/microservice-app-example/todos-api
+    
     
     - name: deploy log message processor
       shell: screen -dm bash -c "REDIS_HOST=192.168.33.12 REDIS_PORT=6379 REDIS_CHANNEL=log_channel python3 main.py; exe sh"
       args:
          chdir: /home/vagrant/microservice-app-example/log-message-processor    
+    
+    - name: Run Zipkin
+      shell: java -jar zipkin.jar &
+
+    - name: deploy todos
+      shell: sudo pm2 start "JWT_SECRET=PRFT TODO_API_PORT=8082 REDIS_HOST=192.168.33.12 REDIS_PORT=6379 npm run start"
+      args:
+         chdir: /home/vagrant/microservice-app-example/todos-api

@@ -71,20 +71,48 @@
     - name: Install Pip3
       apt: name=python3-pip state=present
 
+    - name: install Zipkin
+      shell: curl -sSL https://zipkin.io/quickstart.sh | bash -s
+      
     - name: Setup users-api
       shell: update-ca-certificates -f
       shell: ./mvnw clean install
       args:
         chdir: /home/vagrant/microservice-app-example/users-api/
     
-    - name: Setup Auth-api
+    - name: export go Variable in Auth-api 
+      shell: sudo echo 'export GO111MODULE=on' >> /$HOME/.profile
+      args:
+        chdir: /home/vagrant/microservice-app-example/auth-api
+
+    - name: Check if Go mod exists
+      stat:
+        path: "/home/vagrant/microservice-app-example/auth-api/go.mod"
+      register: result2
+      
+
+    - name: Go init in Auth-api 
       shell: sudo echo 'export GO111MODULE=on' >> /$HOME/.profile
       shell: sudo go mod init github.com/tefaardila/microservice-app-example/tree/master/auth-api
+      args:
+        chdir: /home/vagrant/microservice-app-example/auth-api
+      when: not result2.stat.exists
+
+    - name: Go mod Auth-api
       shell: sudo go mod tidy
+      args:
+        chdir: /home/vagrant/microservice-app-example/auth-api
+
+    - name: Go build  Auth-api
       shell: sudo go build
       args:
         chdir: /home/vagrant/microservice-app-example/auth-api
-        
+
+    - name: Install pm2
+      shell: sudo npm install pm2 -g
+      args:
+        chdir: /home/vagrant
+
     - name: Setpup todos-api
       shell: sudo npm install
       args:

@@ -52,9 +52,8 @@
         name: nodejs
         state: present 
     
-    # - name: install Zipkin
-    #   shell: curl -sSL https://zipkin.io/quickstart.sh | bash -s
-    #   shell: java -jar zipkin.jar &
+    - name: install Zipkin
+      shell: curl -sSL https://zipkin.io/quickstart.sh | bash -s
 
     - name: Setpup Frontend - Run npm install
       shell: sudo npm install 
