@@ -88,7 +88,7 @@
     - name: Check if Go mod exists
       stat:
         path: "/home/vagrant/microservice-app-example/auth-api/go.mod"
-      register: result2
+      register: result3
       
 
     - name: Go init in Auth-api 
@@ -96,7 +96,7 @@
       shell: sudo go mod init github.com/tefaardila/microservice-app-example/tree/master/auth-api
       args:
         chdir: /home/vagrant/microservice-app-example/auth-api
-      when: not result2.stat.exists
+      when: not result3.stat.exists
 
     - name: Go mod Auth-api
       shell: sudo go mod tidy

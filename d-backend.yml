@@ -14,17 +14,46 @@
       args:
          chdir: /home/vagrant/microservice-app-example/auth-api 
     
-    
-    
     - name: deploy log message processor
       shell: screen -dm bash -c "REDIS_HOST=192.168.33.12 REDIS_PORT=6379 REDIS_CHANNEL=log_channel python3 main.py; exe sh"
       args:
          chdir: /home/vagrant/microservice-app-example/log-message-processor    
     
+    - name: Check zipkin in localhost
+      delegate_to: localhost
+      stat:
+        path: "C:/Users/sthefania.ardilab/training/SCM2/microservices-ansible/zipkin.jar"
+      register: result
+
     - name: Run Zipkin
       shell: java -jar zipkin.jar &
+      when: not result.stat.exists
+
+
+    - name: Check if port 8082 is listening
+      wait_for:
+        port: 8082
+        delay: 5
+        timeout: 10
+        msg: "Timeout waiting for 8082 to respond"
+      register: port_check
+      ignore_errors: yes
+      
+
+    # - name: Kill pm2 todos process
+    #   shell: sudo pm2 stop all
+    #   args:
+    #      chdir: /home/vagrant
+    #   ignore_errors: yes
+
+    - name: Kill 8082 port
+      shell: sudo kill -9 $(sudo lsof -t -i:8082)
+      args:
+         chdir: /home/vagrant
+      when: port_check.failed == false
+      
 
     - name: deploy todos
-      shell: sudo pm2 start "JWT_SECRET=PRFT TODO_API_PORT=8082 REDIS_HOST=192.168.33.12 REDIS_PORT=6379 npm run start"
+      shell: sudo pm2 start "JWT_SECRET=PRFT TODO_API_PORT=8082 REDIS_HOST=192.168.33.12 REDIS_PORT=6379 npm run start" --name "todos"
       args:
          chdir: /home/vagrant/microservice-app-example/todos-api
