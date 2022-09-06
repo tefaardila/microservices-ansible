@@ -1,0 +1,21 @@
+---
+- name: Database Deployment
+  hosts: all
+  become: true
+  tasks:
+    - name: Change redis bind ip
+      lineinfile: 
+        path: /etc/redis/redis.conf
+        regexp: 'bind 127.0.0.1 ::1'
+        line: 'bind 0.0.0.0'
+        backrefs: yes
+
+    - name: Change redis protected mode
+      lineinfile: 
+        path: /etc/redis/redis.conf
+        regexp: 'protected-mode yes'
+        line: 'protected-mode no'
+        backrefs: yes
+        
+    - name: Restart redis 
+      shell: sudo systemctl restart redis
